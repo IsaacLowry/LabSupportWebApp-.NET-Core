@@ -1,0 +1,39 @@
+﻿@using MongoDB.Bson
+@model MongoDB.Bson.BsonDocument
+
+<table>
+    @foreach (var fieldName in Model.Names)
+    {
+        var item = Model[fieldName];
+        <tr>
+            <th>@fieldName</th>
+            <td>
+                @if (item is BsonDocument)
+                {
+                    <partial name="_Document" model="item" />
+                }
+                else if (item is BsonArray)
+                {
+                    foreach (var row in (BsonArray)item)
+                    {
+                        <div>
+                            @if (row is BsonDocument)
+                            {
+                                <partial name="_Document" model="row" />
+                            }
+                            else
+                            {
+                                @row
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    @item
+                }
+            </td>
+            <td>@item.GetType().Name</td>
+        </tr>
+    }
+</table>

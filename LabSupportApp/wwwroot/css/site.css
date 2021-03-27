@@ -1,0 +1,481 @@
+﻿@font-face {
+    font-family: 'Baxter Sans Web';
+    src: url(../Resources/Baxter-Regular.ttf) format('truetype'); 
+}
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    text-align: center;
+    font-family: 'Baxter Sans Web', Fallback, 'Arial Nova';
+    background-image: url("../Resources/bg-image.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input
+select,
+textarea {
+    max-width: 280px;
+    resize: none;
+    background-color: white;
+}
+
+.mainContainer {
+    margin-top: 0;
+    height: 80vh;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+}
+
+label {
+    font-size: 1.5rem;
+}
+
+input[type=text] {
+    border-color: #676767;
+    max-width: 345px;
+    border-radius: 8px;
+}
+
+footer.Content {
+    margin-top: 2vh;
+    justify-content: center;
+    color: #dbdbdb;
+    position: absolute;
+    bottom: 10px;
+}
+
+
+button {
+    padding: 1.2rem 0;
+}
+
+.modal-title {
+    right: 40%;
+    font-size: 2.5rem;
+}
+
+.modal-backdrop {
+    opacity: 0.5 !important;
+}
+
+
+#HelpMenu {
+    top: 15vh;
+}
+
+.helpSettings {
+    margin-bottom: 1vh;
+    font-size: 2.5rem;
+    text-align: left;
+    align-content: flex-start;
+    width: 100%;
+}
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+    /* Hide default HTML checkbox */
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        -webkit-transition: 0.2s;
+        transition: 0.2s;
+    }
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(22px);
+    -ms-transform: translateX(22px);
+    transform: translateX(22px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 28px;
+}
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+.text-info {
+    font-size: 12px;
+}
+
+.btn-group {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.UserName {
+    color: white;
+}
+
+/*.danger {
+    font-size: 24px;
+    background-color: #5A86FF;
+    color: white;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    border: none;
+    fill-opacity: 1;
+}
+
+.JoinQueueBtn:hover {
+    color: white;
+    background-color: #003366;
+    font-weight: bolder;
+}
+}*/
+
+.AccountBtn {
+    background-color: white;
+    color: #676767;
+    border-radius: 4px;
+    margin-left: 10px;
+    padding: 1rem 1.5rem;
+    border: none;
+}
+
+    .AccountBtn:hover {
+        background-color: #DFDFDF;
+        font-weight: 900;
+    }
+
+.AdminBtn {
+    font-size: 24px;
+    background-color: #95b9e6;
+    color: white;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #676767
+}
+
+    .AdminBtn:hover {
+        text-decoration: none;
+        background-color: #d1d1d1;
+        color: #676767;
+        font-weight: 900;
+    }
+
+.SignUpbtn {
+    background-color: #5A86FF;
+    color: white;
+    border-radius: 4px;
+    padding: 1rem 1.5rem;
+    border: none;
+    margin-left: 5px;
+}
+
+    .SignUpbtn:hover {
+        background-color: #1238A1;
+        font-weight: 900;
+    }
+
+.HomeBtn {
+    background-color: white;
+    opacity: 0.9;
+    color: #000b59;
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    border: none;
+    margin-left: 25px;
+}
+
+    .HomeBtn:hover {
+        color: #000b59;
+        opacity: 1;
+        font-weight: bolder;
+    }
+
+.HelpBtn {
+    background-color: #000b59;
+    color: white;
+    border-radius: 4px;
+    padding: 1rem 1.5rem;
+    border: none;
+    margin-left: 15px;
+}
+
+    .HelpBtn:hover {
+        color: white;
+        background-color: #01182e;
+        font-weight: bolder;
+    }
+
+.HelpMenu {
+    display: none;
+    position: fixed;
+    top: 0vh;
+    right: 15px;
+    border: 3px solid #f1f1f1;
+    z-index: 9;
+}
+
+.wrongAccount {
+    color: black;
+    margin-top: 2vh;
+    margin-bottom: 0px;
+}
+
+.loginError {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+
+
+h1 {
+    font-size: 56px;
+    font-weight: bold;
+    color: #333333;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+input {
+    text-align: center;
+    border-left-color: #676767;
+    border-color: #676767;
+    width: 100vw;
+}
+
+.instruction {
+    font-size: 14px;
+}
+
+.JoinQueueBtn {
+    font-size: 24px;
+    background-color: #5A86FF;
+    color: white;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    border: none;
+    fill-opacity: 1;
+}
+
+    .JoinQueueBtn:hover {
+        color: white;
+        background-color: #003366;
+        font-weight: bolder;
+    }
+
+.CreateAQueueBtn {
+    font-size: 24px;
+    background-color: #000b59;
+    color: white;
+    border-radius: 8px;
+    padding: 1rem 1rem;
+    border: none;
+    margin-left: 1vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+    .CreateAQueueBtn:hover {
+        color: white;
+        background-color: #01182e;
+        font-weight: bolder;
+    }
+
+
+.ticketSymbol {
+    color: #1238A1;
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+    font-size: 4rem;
+    animation-name: floating;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.errorMessage {
+    font-size: 14px;
+    font-weight: bold;
+    color: #eb4253;
+    animation-name: floating;
+    animation-duration: 0.8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes floating {
+    0% {
+        transform: translate(0, 0px);
+    }
+
+    50% {
+        transform: translate(0, 1px);
+    }
+
+    100% {
+        transform: translate(0, -0px);
+    }
+}
+
+.dotContainer {
+    width: 80px;
+    margin: 40px auto;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: black;
+    border-radius: 50%;
+}
+
+.Dot1 {
+    background-color: aqua;
+    animation-name: jump;
+    animation-duration: 1s;
+    animation-delay: 0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.Dot2 {
+    background-color: dodgerblue;
+    animation-name: jump;
+    animation-duration: 1s;
+    animation-delay: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+
+.Dot3 {
+    background-color: #5A86FF;
+    animation-name: jump;
+    animation-duration: 1s;
+    animation-delay: 0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.Dot4 {
+    background-color: #001bff;
+    animation-name: jump;
+    animation-duration: 1s;
+    animation-delay: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.Dot5 {
+    background-color: darkblue;
+    animation-name: jump;
+    animation-duration: 1s;
+    animation-delay: 0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes jump {
+    0% {
+        transform: translate(0, 0px);
+    }
+
+    50% {
+        transform: translate(0, 15px);
+    }
+
+    100% {
+        transform: translate(0, -0px);
+    }
+}
+
+.staffReady {
+    font-size: 3rem;
+    font-weight: bolder;
+}
+
+.hyperlinkText {
+    color: #5A86FF;
+    font-size: 2.25rem;
+    font-weight: bold;
+}
+
+    .hyperlinkText:hover {
+        color: #003366;
+        font-weight: bolder;
+    }
+
+.JoinSessionLink {
+    font-size: 9rem;
+    color: #5A86FF;
+    border-bottom: 20px solid transparent;
+}
+
+    .JoinSessionLink:hover {
+        font-size: 10rem;
+        color: #003366;
+    }
+
+textarea {
+    width: 100vw;
+}
+
+.teachTitle {
+    font-size: 3rem;
+}

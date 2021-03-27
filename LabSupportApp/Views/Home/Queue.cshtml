@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Queue";
+}
+<div class="mainContainer">
+    <div class="row" style="margin-top: 5vh; font-size: 2rem;">
+        <div class="col-lg-6 col-lg-offset-3">
+            <h1>Lab Support</h1>
+            <div style="margin-top: 5vh;">
+                <p class="ticketSymbol"> <i class="fas fa-ticket-alt"></i></p>
+                <p>Ticket accepted! <i class="far fa-check-circle" style="color: #32c94c;"></i></p>
+                <div style="margin-top: 5vh;">
+                    <p>Waiting for a member of staff</p>
+                </div>
+            </div>
+
+
+            <div class="circle"></div>
+            <div class="dotContainer">
+                <div class="dot Dot1"></div>
+                <div class="dot Dot2"></div>
+                <div class="dot Dot3"></div>
+                <div class="dot Dot4"></div>
+                <div class="dot Dot5"></div>
+            </div>
+
+            <div style="margin-top: 5vh;">
+                <p> <i style="font-weight: bold;"> @ViewBag.UsersInFront<i class="numberOfStudentsRemaining"></i></i> students remaining ahead of you</p><br />
+                <p> <i style="font-weight: bold;"> @ViewBag.QueueSize<i class="numberOfStudentsRemaining"></i></i> students are queueing</p>
+            </div>
+            <div>
+                <p> Average waiting time is  <i style="font-weight: bold;"><i class="AverageWait"> @ViewBag.AvgWait minutes</i></i></p>
+            </div>
+
+            <div>
+                <a class="btn btn-danger" role="button" href="@Url.Action("LeaveQueue", "home")"><i class="fas fa-chevron-left"></i> Leave Queue</a>
+            </div>
+
+            <script type="text/javascript">
+
+                setTimeout(function () {
+                    window.location.replace('@Url.Action("queue", "home")');
+                }, 5000)
+
+            </script>
+
+        </div>
+    </div>
+</div>
+ 

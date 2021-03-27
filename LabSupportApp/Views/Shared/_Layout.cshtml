@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LabSupportApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
+</head>
+<body>
+
+    <script type="text/javascript">
+        function displayNotification() {
+            const notification = new Notification("Notification from University Lab Support", {
+                body: "Someone is avaialable to help you!",
+                icon: "https://localhost:44321/Resources/dundeeLogo.png"
+            });
+
+            notification.onclick = (e) => {
+                window.location.href = "@Url.Action("Queue", "home")"
+            }
+
+        }
+
+        console.log(Notification.permission);
+        if (Notification.permission === "enabled") {
+            alert("Permission Granted");
+            displayNotification();
+        } else if (Notification.permission !== "disabled") {
+            Notification.requestPermission().then(permission => {
+                console.log(permission);
+
+            });
+
+        }
+    </script>
+
+    <div class="navbar-default navbar-fixed-top" role="navigation">
+        <div class="container topnav">
+            <div class="navbar-header">
+                <a class="navbar-brand" href=@Url.Action("index", "home")></a> <img alt="University Logo" src="~/Resources/dundeeLogoName.png" height="60" />
+                <a class="HomeBtn" href="@Url.Action("index", "home")" role="button">
+                    <i class="fas fa-home"></i>
+                </a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navCollapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+
+            <div class="navbar-collapse collapse navbar-right" id="navCollapse">
+                <div class="btn-group" role="navigation" aria-label="Navigation Buttons" aria-expanded="false">
+                    
+
+
+
+
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <a class="AccountBtn" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Sign in</a>
+                    }
+                    else
+                    {
+
+                        <span class="UserName">@User.FindFirst("name").Value</span>
+
+                        <a class="SignUpbtn" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a>
+
+                    }
+
+                    <a class="HelpBtn" href="#" role="button" data-toggle="modal" data-target="#HelpMenu" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-cog"></i>
+                    </a>
+
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!--Menu Popup-->
+    <div class="modal" id="HelpMenu">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" type="button" data-dismiss="modal"><i class="fas fa-times-circle"></i></button>
+                    <h2 class="modal-title" style="margin-left: 2vw;">Settings</h2>
+                    <hr />
+                    <div class="modal-body">
+                        <table class="helpSettings">
+                            <tr>
+                                <td>
+                                    Sound
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" id="soundToggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Vibration
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" id="vibrationToggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Push Notifications
+                                </td>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" id="pushToggle" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr />
+                        <div>
+                            <p class="text-info">Vibration will only work for mobile devices.</p>
+                            <p class="text-info">Please ensure that notifications are enabled within the browser before enabling it here.</p>
+                        </div>
+                        <hr />
+                        <div>
+                            <button class="JoinQueueBtn" onclick="save()" data-dismiss="modal">Save</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--End of Popup-->
+    <script type="text/javascript">
+
+        function save() {
+            var soundToggle = document.getElementById('soundToggle');
+            localStorage.setItem('soundToggle', soundToggle.checked);
+
+            var vibrationToggle = document.getElementById('vibrationToggle');
+            localStorage.setItem('vibrationToggle', vibrationToggle.checked);
+
+            var pushToggle = document.getElementById('pushToggle');
+            localStorage.setItem('pushToggle', pushToggle.checked);
+        }
+
+        function load() {
+            var soundCheck = JSON.parse(localStorage.getItem('soundToggle'));
+            document.getElementById("soundToggle").checked = soundCheck;
+
+            var vibrationCheck = JSON.parse(localStorage.getItem('vibrationToggle'));
+            document.getElementById("vibrationToggle").checked = vibrationCheck;
+
+            var pushCheck = JSON.parse(localStorage.getItem('pushToggle'));
+            document.getElementById("pushToggle").checked = pushCheck;
+
+        }
+
+        load();
+
+        //var checkboxValues = JSON.parse(localStorage.getItem('checkboxValues')) || {},
+        //    $checkboxes = $(".helpSettings :checkbox");
+
+        //$checkboxes.on("change", function () {
+        //    $checkboxes.each(function () {
+        //        checkboxValues[this.id] = this.checked;
+        //    });
+
+        //    localStorage.setItem("checkboxValues", JSON.stringify(checkboxValues));
+        //});
+
+        //// On page load
+        //$.each(checkboxValues, function (key, value) {
+        //    $("#" + key).prop('checked', value);
+        //});
+
+        //var sound
+
+        //if (document.getElementById('soundToggle').checked === true) {
+        //    var sound = 'enabled';
+        //} else if (document.getElementById('soundToggle').checked === false) {
+        //    var sound = 'disabled';
+        //}
+
+    </script>
+
+    
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - Lab Support
+        </div>
+    </footer>
+    <script src="~/bundles/jquery"></script>
+    <script src="~/lib/jquery/dist/jquery-3.4.1.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

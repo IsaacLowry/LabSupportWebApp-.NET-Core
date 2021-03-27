@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewBag.Title = "AddAdminToQueue";
+}
+
+<div class="mainContainer">
+
+    <div class="row" style="margin-top: 5vh; font-size: 1.5rem;">
+        <div style="margin-top: 2vh;">
+            <a class="hyperlinkText" href=@Url.Action("QueueManager", "home")><i class="fas fa-chevron-left"></i> Back to Queue Manager</a>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 5vh; font-size: 2rem;">
+        <div class="col-lg-6 col-lg-offset-3">
+            <h2 class="teachTitle">Add Admin To Queue</h2>
+
+            <div class="errorMessage">
+                @ViewBag.UserError
+                <strong style="color: #49b867;">@ViewBag.UserSuccess</strong>
+            </div>
+
+            <div>
+                <form action="@Url.Action("AddAdminToQueue", "home")" method="post">
+                    <div style="margin-top: 4vh;">
+                        <label for="AddAdminUser">Dundee Email Address:</label><br />
+                        <input type="email" id="AddAdminUser" name="AddAdminUser" pattern=".+dundee.ac.uk" title="Please enter a valid Dundee email address" required placeholder="JoeBloggs@dundee.ac.uk" style="width:40vh; border-radius: 8px;" />
+                    </div>
+
+
+
+                    <div style="margin-top: 4vh; margin-bottom: 3vh;">
+                        <label for="AddTeamsLink">Link to join Teams Meeting:</label><br />
+                        <input type="url" id="AddTeamsLink" name="AddTeamsLink" pattern="https?://teams.microsoft.com/.+" title="Please enter a valid Teams invitation link" required placeholder="Paste link to join Teams Meeting here." rows="6" style="width:40vh; height: 4vh; border-radius: 8px; font-size: 12px;" />
+                    </div>
+
+                    <div style="margin-top: 4vh;">
+                        <button class="JoinQueueBtn" type="submit">Add User</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+

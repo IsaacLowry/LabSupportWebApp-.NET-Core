@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="mainContainer" style="margin-top: 5vh;" >
+
+
+    <div class="row" style="margin-top: 2vh;">
+        <div>
+            @if (ViewBag.Error != null)
+            {
+                <div style="margin-top: 2vh;">
+                    <a class="hyperlinkText" href=@Url.Action("Queue", "home")><i class="fas fa-chevron-left"></i> Back To Queue</a>
+                </div>
+                
+            }
+
+            @if (User.FindFirst("name").Value.Contains("(Student)"))
+            {
+                @*<div>Welcome to practical session support!</div>*@
+
+            }
+            else if (User.FindFirst("name").Value.Contains("(Staff)"))
+            {
+                <div>
+                    <a class="AdminBtn" href="@Url.Action("QueueManager", "home")" role="button" style="padding: 0.5rem 1rem;">
+                        View Queues
+                    </a>
+                    <a class="AdminBtn" href="@Url.Action("CreateAQueue", "home")" role="button" style="padding: 0.5rem 1.5rem; margin-left: 1vw;">
+                        New Queue
+                    </a>
+                </div>
+                <div class="row" style="margin-top: 2vh;">
+                    <a class="AdminBtn" href="@Url.Action("NewAdminUser", "home")" role="button" style="padding: 0.5rem 8rem;">
+                        New Admin User
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="row" style="margin-top: 4vh; font-size: 2rem;">
+        <div class="col-lg-6 col-lg-offset-3">
+
+
+            <h1>Lab Support</h1>
+            <div style="margin-top: 5vh;">
+
+
+
+
+                <strong style="color: #eb4253;">@ViewBag.Error</strong>
+                    <h2>Please enter the lab code</h2>
+                    <div class="errorMessage">
+                        <div id="error"></div>
+                    </div>
+                    <form id="form" action="@Url.Action("queue", "home")" method="post">
+                        <div style="margin-top: 1vh;">
+                            <input id="UserCode" name="UserCode" type="text"
+                                   oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                                   @*Taken from "https://www.techiedelight.com/restrict-html-input-text-box-to-allow-only-numeric-values/"*@
+                                   maxlength="6" required placeholder="123456" style="border-radius: 8px; width: 50vw;" />
+                        </div>
+                        <div style="margin-top: 3vh;">
+                            <p class="instruction"> You should receive this from your lab coordinator</p>
+                        </div>
+                        <div class="row" style="margin-top: 3vh;">
+                            <div>
+                                <h2>Description for <strong style="color: #eb4253;">high priority</strong> issues</h2>
+                                <textarea id="Description" name="Description" rows="3" placeholder="E.g - Cannot log in." style="border-width: 2px; border-radius: 8px; font-size: 12px; text-align: center;"></textarea>
+                            </div>
+                        </div>
+                        <div style="margin-top: 2vh;">
+                            <button class="JoinQueueBtn" type="submit">Join Queue</button>
+
+                        </div>
+                    </form>
+
+                    <script>
+                        // JavaScript source code
+                        const UserCode = document.getElementById('UserCode')
+                        const form = document.getElementById('form')
+                        const errorElement = document.getElementById('error')
+
+                        form.addEventListener('submit', (e) => {
+                            let messages = []
+                            if (UserCode.value === '' || UserCode.value == null) {
+                                messages.push("Please insert a user code to proceed")
+                            }
+
+
+                            if (UserCode.value === '123456') {
+                                messages.push('Please enter a unique code provided by a member of staff')
+                            } else if (UserCode.value.length != 6) {
+                                messages.push('Please enter 6 numbers')
+                            }
+                            else {
+                            }
+
+                            if (messages.length > 0) {
+                                e.preventDefault()
+                                errorElement.innerText = messages.join(',')
+                            }
+
+                        })
+                    </script>
+
+                @*}*@
+
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

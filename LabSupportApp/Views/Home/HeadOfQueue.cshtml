@@ -1,0 +1,94 @@
+﻿
+@{
+    ViewBag.Title = "HeadOfQueue";
+}
+
+<div class="mainContainer">
+
+    @*audio sourced from https://material.io/design/sound/sound-resources.html*@
+    <audio src="~/Resources/alert.wav" id="HeadOfQueueNotification"></audio>
+
+    <script type="text/javascript">
+        const HeadOfQueueNotification = document.getElementById("HeadOfQueueNotification");
+
+
+        window.onload = function () {
+            if (document.getElementById('vibrationToggle').checked === true) {
+                window.navigator.vibrate(1000);
+            }
+
+            if (document.getElementById('soundToggle').checked === true) {
+                HeadOfQueueNotification.play();
+            }
+
+            if (document.getElementById('pushToggle').checked === true) {
+                displayNotification();
+            }
+
+        }
+
+        setTimeout(function () {
+            if (document.getElementById('vibrationToggle').checked === true) {
+                window.navigator.vibrate(1000);
+            }
+
+            if (document.getElementById('soundToggle').checked === true) {
+                HeadOfQueueNotification.play();
+            }
+        }, 30000) //time to wait in ms for audio to play
+
+        setTimeout(function () {
+            if (document.getElementById('vibrationToggle').checked === true) {
+                window.navigator.vibrate(1000);
+            }
+
+            if (document.getElementById('soundToggle').checked === true) {
+                HeadOfQueueNotification.play();
+            }
+        }, 60000) //time to wait in ms for audio to play
+    </script>
+
+    <div class="row" style="margin-top: 5vh; font-size: 2rem;">
+        <div class="col-lg-6 col-lg-offset-3">
+            <h1>Lab Support</h1>
+            <div style="margin-top: 5vh;">
+                <p class="ticketSymbol"><i class="fas fa-school"></i></p>
+                <p class="staffReady">A member of staff is ready to help you!<p>
+                <p>You are at the front of the queue</p>
+
+            </div>
+                <div style="margin-top: 8vh; margin-bottom: 50px;">
+                    <p>Please click <a class="hyperlinkText" href="@Html.Raw(ViewBag.TeamsLink)" target="_blank" onclick="meetingJoined()">here</a> to join this session</p>
+                    <a href="@Html.Raw(ViewBag.TeamsLink)" target="_blank">
+                        <div class="JoinSessionLink" onclick="meetingJoined()">
+
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                    </a>
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+</div>
+
+<script>
+
+
+    function meetingJoined() {
+
+        setTimeout(function () {
+            window.location.replace('@Url.Action("QueueComplete", "home")');
+        }, 3000)
+
+
+    }
+
+</script>
