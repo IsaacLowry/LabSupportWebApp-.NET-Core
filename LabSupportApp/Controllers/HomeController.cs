@@ -86,7 +86,7 @@ namespace LabSupportApp.Controllers
                 var result = _adminUsersCollection.Find(new BsonDocument()).ToList();
                 foreach (var user in result)
                 {
-                    if (user.ToString().Contains(User.Identity.Name))
+                    if (user.ToString().IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                     {
                         UserIsAdmin = User.Identity.Name;
                     }
@@ -128,7 +128,7 @@ namespace LabSupportApp.Controllers
             foreach (var user in result)
             {
                 Console.WriteLine(user.ToString());
-                if (user.ToString().Contains(User.Identity.Name))
+                if (user.ToString().IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     UserIsAdmin = User.Identity.Name;
                 }
@@ -163,7 +163,7 @@ namespace LabSupportApp.Controllers
                 var result = _adminUsersCollection.Find(new BsonDocument()).ToList();
                 foreach (var user in result)
                 {
-                    if (user.ToString().Contains(User.Identity.Name))
+                    if (user.ToString().IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                     {
                         UserIsAdmin = User.Identity.Name;
                     }
@@ -199,6 +199,7 @@ namespace LabSupportApp.Controllers
         {
 
             int myCode = 0;
+            int studentsAhead = 0;
             int qSize = 0;
             int totalMins = 0;
             int meanElapsedTime;
@@ -217,7 +218,25 @@ namespace LabSupportApp.Controllers
                 Console.WriteLine(waitingStudent.ElapsedTime);
                 totalMins = totalMins + waitingStudent.ElapsedTime;
             }
-            var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
+
+            studentUsers.Sort((x, y) => DateTime.Compare(x.TimeEntered, y.TimeEntered));
+            if (studentUsers.Count != 0)
+            {
+                foreach (var sUser in studentUsers)
+                {
+                    if (sUser.Name != User.Identity.Name)
+                    {
+                        studentsAhead = studentsAhead + 1;
+                    }
+
+                    if (sUser.Name == User.Identity.Name)
+                    {
+                        break;
+                    }
+                }
+            }
+
+                var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
             foreach (var singleQ in openQueues)
             {
                 if (singleQ.Code == myCode)
@@ -233,7 +252,7 @@ namespace LabSupportApp.Controllers
                         qSize = 1;
                     }
 
-                    ViewBag.UsersInFront = singleQ.StudentCount - 1;
+                    ViewBag.UsersInFront = studentsAhead;
                     meanElapsedTime = totalMins / qSize;
                     ViewBag.AvgWait = meanElapsedTime;
                 }
@@ -394,7 +413,7 @@ namespace LabSupportApp.Controllers
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
             foreach (var singleQ in openQueues)
             {
-                if (singleQ.User == User.Identity.Name)
+                if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     ViewBag.code = singleQ.Code;
                     ViewBag.StudentsLeft = singleQ.StudentCount;
@@ -412,7 +431,7 @@ namespace LabSupportApp.Controllers
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
             foreach (var q in openQueues)
             {
-                if (q.User == User.Identity.Name)
+                if (q.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     ViewBag.code = q.Code;
                     ViewBag.StudentsLeft = q.StudentCount;
@@ -458,7 +477,7 @@ namespace LabSupportApp.Controllers
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
             foreach (var singleQ in openQueues)
             {
-                if (singleQ.User == User.Identity.Name)
+                if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     labName = null;
                     TeamsLink = null;
@@ -537,13 +556,13 @@ namespace LabSupportApp.Controllers
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
             foreach (var singleQ in openQueues)
             {
-                if (singleQ.User == User.Identity.Name)
+                if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     code = singleQ.Code;
                 }
 
 
-                if (singleQ.User == RemoveAdminUser)
+                if (singleQ.User.IndexOf(RemoveAdminUser, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     if (code == singleQ.Code)
                     {
@@ -579,7 +598,7 @@ namespace LabSupportApp.Controllers
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
             foreach (var singleQ in openQueues)
             {
-                if (singleQ.User == AddAdminUser)
+                if (singleQ.User.IndexOf(AddAdminUser, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     ViewBag.UserError = UserExists;
                     return View();
@@ -597,7 +616,7 @@ namespace LabSupportApp.Controllers
 
             foreach (var singleQ in openQueues)
             {
-                if (singleQ.User == User.Identity.Name)
+                if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     
                     code = singleQ.Code;
@@ -628,7 +647,7 @@ namespace LabSupportApp.Controllers
                     code = student.Qcode;
                     foreach (var q in openQueues)
                     {
-                        if (q.User == User.Identity.Name)
+                        if (q.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                         {
                             int count = q.StudentCount - 1;
                             var filter = Builders<QueueObject>.Filter.Eq("code", code);
@@ -671,7 +690,7 @@ namespace LabSupportApp.Controllers
             var copyUsers = _studentUsersBackup.Find(studentUser => true).ToList();
             foreach (var singleQ in openQueues)
             {
-                if (singleQ.User == User.Identity.Name)
+                if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     code = singleQ.Code;
                     LabName = singleQ.LabName;
@@ -698,7 +717,7 @@ namespace LabSupportApp.Controllers
                 if (queueEmpty == false)
                 {
                     int studentCounter = singleQ.StudentCount - 1;
-                    var countFilter = Builders<QueueObject>.Filter.Eq("user", singleQ.User);
+                    var countFilter = Builders<QueueObject>.Filter.Eq("code", singleQ.Code);
                     var update = Builders<QueueObject>.Update.Set("studentCount", studentCounter);
                     var result = _queueAdminCollection.UpdateMany(countFilter, update);
 
@@ -728,7 +747,7 @@ namespace LabSupportApp.Controllers
             var openQueues = _queueAdminCollection.Find(studentUser => true).ToList();
             foreach (var singleQ in openQueues)
             {
-                if (singleQ.User == User.Identity.Name)
+                if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     currentQcode = singleQ.Code;
                 }
