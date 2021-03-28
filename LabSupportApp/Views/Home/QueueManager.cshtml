@@ -24,14 +24,19 @@
             border: 2px dashed #a7e6fc;
             text-align: left;
             padding: 8px;
+            color: #676767;
         }
 
         .openClass tr:nth-child(even) {
             background-color: #a7e6fc;
         }
+
+        .openClass tr:nth-child(odd) {
+            background-color: white;
+        }
 </style>
 
-<div class="mainContainer" style="overflow-y: auto; margin-top: 5vh">
+<div class="mainContainerAdmin" style="overflow-y: auto; margin-top: 5vh">
     <div class="row">
         <div class="col-lg-6 col-lg-offset-3">
             <div style="margin-top: 2vh;">
@@ -42,13 +47,13 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="admin">
 
-        <h1>Lab Support</h1>
-        <strong>@ViewBag.LabName</strong>
+        <h1 class="queueTitle">Lab Name: @ViewBag.LabName</h1>
+        @*<h1 class="admin">@ViewBag.LabName</h1>*@
 
         <div style="margin-top: 3vh;">
-            <p>There are currently <i style="font-weight: bold;"> @ViewBag.StudentsLeft<i class="numberOfStudents"></i></i> remaining in the queue.</p>
+            <p class="queueNum"><i class="queueTitle" style="font-weight: bold;"> @ViewBag.StudentsLeft</i>  students remaining</p>
         </div>
 
         
@@ -74,22 +79,22 @@
     <div class="row" style="margin-top: 3vh;">
         <div>
             <a class="AdminBtn" href="@Url.Action("AddAdminToQueue", "home")" role="button" style="padding: 0.5rem 5rem;">
-                Add Admin To Queue
+                Add Lab Tutor To Queue
             </a>
         </div>
     </div>
     <div class="row" style="margin-top: 2vh;">
         <div>
             <a class="AdminBtn" href="@Url.Action("RemoveAdminFromQueue", "home")" role="button">
-                Remove Admin From Queue
+                Remove Lab Tutor From Queue
             </a>
         </div>
     </div>
 
-    <div class="row" style="margin-top: 1vh; font-size: 2rem;">
+    <div class="admin" style="margin-top: 1vh; font-size: 2rem;">
         <div class="col-lg-6 col-lg-offset-3">
             <div style="margin-top: 1vh;">
-                <p>Code: <strong>@ViewBag.code</strong></p><br />
+                <p>Code: <strong class="queueNum">@ViewBag.code</strong></p><br />
                 <a class="JoinQueueBtn" href="@Url.Action("QueueManager", "home")" role="button">
                     <i class="fas fa-sync"></i>
                 </a>
@@ -101,7 +106,7 @@
                         <th>Description</th>
                         <th>Student Email</th>
                         <th>Elapsed Time</th>
-                        <th>Pull To Front</th>
+                        <th>See Student</th>
                     </tr>
                     @if (Model != null)
                     {

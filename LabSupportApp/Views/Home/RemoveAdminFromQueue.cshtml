@@ -1,18 +1,51 @@
-﻿
+﻿@model List<QueueObject>
+
 @{
     ViewBag.Title = "RemoveAdminFromQueue";
 }
 
-<div class="mainContainer">
+<style>
+
+    .adminUsers {
+        font-size: 12px;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        .adminUsers th {
+            background-color: #000b59;
+            border: 4px solid white;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .adminUsers td, th {
+            border: 2px dashed #a7e6fc;
+            text-align: left;
+            padding: 8px;
+            color: #676767
+        }
+
+        .adminUsers tr:nth-child(even) {
+            background-color: #a7e6fc;
+        }
+
+        .adminUsers tr:nth-child(odd) {
+            background-color: white;
+        }
+</style>
+
+<div class="mainContainerAdmin">
 
     <div class="row" style="margin-top: 5vh; font-size: 1.5rem;">
         <div style="margin-top: 2vh;">
             <a class="hyperlinkText" href=@Url.Action("QueueManager", "home")><i class="fas fa-chevron-left"></i> Back to Queue Manager</a>
         </div>
     </div>
-    <div class="row" style="margin-top: 5vh; font-size: 2rem;">
+    <div class="admin" style="margin-top: 5vh; font-size: 2rem;">
         <div class="col-lg-6 col-lg-offset-3">
-            <h2 class="teachTitle">Remove Admin From Queue</h2>
+            <h2 class="teachTitle">Remove Lab Tutor From Queue</h2>
 
             <div class="errorMessage">
                 @ViewBag.UserError
@@ -33,6 +66,32 @@
                 </form>
             </div>
 
+            <div style="overflow-y: auto;">
+                <h2>Lab Tutors</h2>
+                <table class="adminUsers">
+                    <tr>
+                        <th>Staff Email</th>
+                        <th>Student they're currently speaking to</th>
+                    </tr>
+                    @if (Model != null)
+                    {
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @item.User
+                                </td>
+                                <td>
+                                    @item.StudentAtHead
+                                </td>
+                            </tr>
+                        }
+
+                    }
+                </table>
+
+            </div>
         </div>
     </div>
 </div>

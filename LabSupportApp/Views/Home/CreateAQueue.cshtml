@@ -2,29 +2,30 @@
 @{
     ViewBag.Title = "CreateAQueue";
 }
-<div class="mainContainer">
+<div class="mainContainerAdmin">
     <div class="row" style="margin-top: 5vh; font-size: 2rem;">
         <div style="margin-top: 2vh;">
             <a class="hyperlinkText" href=@Url.Action("index", "home")><i class="fas fa-chevron-left"></i> Home</a>
         </div>
-        <div class="col-lg-6 col-lg-offset-3">
-            <h2 class="teachTitle">Create A New Queue</h2>
-            <div>
-                <form action="@Url.Action("QueueManager", "home")" method="post">
-                    <div style="margin-top: 4vh;">
-                        <label for="labName">Pratical Session Name:</label><br />
-                        <input type="text" id="LabName" name="LabName" placeholder="E.g - Rocket Science Week 5" required style="width: 40vw;" />
-                    </div>
+        <div class="admin">
+            <div class="col-lg-6 col-lg-offset-3">
+                <h2 class="teachTitle">Create A New Queue</h2>
+                <div>
+                    <form action="@Url.Action("QueueManager", "home")" method="post">
+                        <div style="margin-top: 4vh;">
+                            <label for="labName">Pratical Session Name:</label><br />
+                            <input type="text" id="LabName" name="LabName" placeholder="E.g - Rocket Science Week 5" required style="width: 40vw;" />
+                        </div>
 
-                    <div style="margin-top: 4vh; margin-bottom: 5vh;">
-                        <label for="TeamsLink">Link to join Teams Meeting:</label><br />
-                        <input type="url" id="TeamsLink" name="TeamsLink" pattern="https?://teams.microsoft.com/.+" title="Please enter a valid Teams invitation link" required placeholder="Paste link to join Teams Meeting here." rows="6" style="width:40vh; height: 4vh; border-radius: 8px; font-size: 12px;" />
-                    </div>
+                        <div style="margin-top: 4vh; margin-bottom: 5vh;">
+                            <label for="TeamsLink">Link to join Teams Meeting:</label><br />
+                            <input type="url" id="TeamsLink" name="TeamsLink" pattern="https?://teams.microsoft.com/.+" title="Please enter a valid Teams invitation link" required placeholder="Paste link to join Teams Meeting here." rows="6" style="width:40vh; height: 4vh; border-radius: 8px; font-size: 12px;" />
+                        </div>
 
-                    <button class="JoinQueueBtn" type="submit">Create Queue</button>
-                </form>
+                        <button class="JoinQueueBtn" type="submit">Create Queue</button>
+                    </form>
+                </div>
             </div>
-
         </div>
     </div>
 </div>

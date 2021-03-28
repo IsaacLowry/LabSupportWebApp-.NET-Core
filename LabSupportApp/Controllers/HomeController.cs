@@ -48,7 +48,7 @@ namespace LabSupportApp.Controllers
                 foreach (var sUser in userUpdate)
                 {
 
-                    TimeSpan newElapsedTime = (now - sUser.TimeEntered);
+                    TimeSpan newElapsedTime = (now - sUser.TimeEntered.ToLocalTime());
                     double elapInMins = newElapsedTime.TotalMinutes;
                     int ElapsedTime = Convert.ToInt32(elapInMins);
                     //Console.WriteLine(ElapsedTime);
@@ -283,6 +283,7 @@ namespace LabSupportApp.Controllers
 
             DateTime queueEntryTime = new DateTime();
             queueEntryTime = DateTime.Now;
+            Console.WriteLine(queueEntryTime);
             string Name = User.Identity.Name;
             int unsetElapsedTime = 0;
 
@@ -545,6 +546,24 @@ namespace LabSupportApp.Controllers
 
         public IActionResult RemoveAdminFromQueue()
         {
+            int code = 0;
+            var filter = Builders<QueueObject>.Filter.Where(p => p.User == User.Identity.Name);
+            List<QueueObject> queueObjects = _queueAdminCollection.Find(filter).ToList();
+            if (queueObjects.Count != 0)
+            {
+                foreach (var q in queueObjects)
+                {
+                    code = q.Code;
+                }
+
+                var findOtherAdmins = Builders<QueueObject>.Filter.Where(p => p.Code == code);
+                List<QueueObject> otherQHeads = _queueAdminCollection.Find(findOtherAdmins).ToList();
+
+                return View(otherQHeads);
+            }
+
+
+
             return View();
         }
 
@@ -554,6 +573,7 @@ namespace LabSupportApp.Controllers
             int code = 0;
             string UserMessage = "User Removed!";
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
+            var findOtherAdmins = Builders<QueueObject>.Filter.Where(p => p.Code == code);
             foreach (var singleQ in openQueues)
             {
                 if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
@@ -569,7 +589,8 @@ namespace LabSupportApp.Controllers
                         var filter = Builders<QueueObject>.Filter.Eq("user", singleQ.User);
                         _queueAdminCollection.DeleteOne(filter);
                         ViewBag.UserSuccess = UserMessage;
-                        return View();
+                        List<QueueObject> otherQHeads = _queueAdminCollection.Find(findOtherAdmins).ToList();
+                        return View(otherQHeads);
 
                     }
 
@@ -579,7 +600,8 @@ namespace LabSupportApp.Controllers
 
             UserMessage = "User Is Not Managing This Queue!";
             ViewBag.UserError = UserMessage;
-            return View();
+            List<QueueObject> QHeads = _queueAdminCollection.Find(findOtherAdmins).ToList();
+            return View(QHeads);
         }
 
         public IActionResult AddAdminToQueue()
@@ -618,7 +640,6 @@ namespace LabSupportApp.Controllers
             {
                 if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
-                    
                     code = singleQ.Code;
                     LabName = singleQ.LabName;
                     StudentCount = singleQ.StudentCount;

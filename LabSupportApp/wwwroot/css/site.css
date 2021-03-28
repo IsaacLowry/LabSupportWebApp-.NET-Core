@@ -20,6 +20,10 @@ body {
     padding-right: 15px;
 }
 
+.admin {
+    color: white;
+}
+
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
@@ -31,15 +35,27 @@ body {
 input
 select,
 textarea {
+    color: #676767;
     max-width: 280px;
     resize: none;
     background-color: white;
+}
+
+input {
+    color: #676767
 }
 
 .mainContainer {
     margin-top: 0;
     height: 80vh;
     background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+}
+
+.mainContainerAdmin {
+    margin-top: 0;
+    height: 80vh;
+    background-color: rgba(36, 36, 36, 0.9);
     border-radius: 8px;
 }
 
@@ -64,6 +80,15 @@ footer.Content {
 
 button {
     padding: 1.2rem 0;
+}
+
+.queueTitle {
+    color: white;
+    font-size: 36px;
+}
+
+.queueNum {
+    font-size: 28px;
 }
 
 .modal-title {
@@ -197,19 +222,19 @@ input:checked + .slider:before {
 
 .AdminBtn {
     font-size: 24px;
-    background-color: #95b9e6;
+    background-color: #5855ed;
     color: white;
     border-radius: 8px;
     padding: 0.5rem 1.5rem;
     border-width: 2px;
     border-style: solid;
-    border-color: #676767
+    border-color: white;
 }
 
     .AdminBtn:hover {
         text-decoration: none;
-        background-color: #d1d1d1;
-        color: #676767;
+        color: white;
+        background-color: #95b9e6;
         font-weight: 900;
     }
 
@@ -457,7 +482,7 @@ input {
 }
 
     .hyperlinkText:hover {
-        color: #003366;
+        color: #61a5ff;
         font-weight: bolder;
     }
 
