@@ -36,9 +36,9 @@
         }
 </style>
 
-<div class="mainContainerAdmin">
+<div class="mainContainerAdmin" style="overflow-y: auto; margin-top: 5vh;">
 
-    <div class="row" style="margin-top: 5vh; font-size: 1.5rem;">
+    <div class="row">
         <div style="margin-top: 2vh;">
             <a class="hyperlinkText" href=@Url.Action("QueueManager", "home")><i class="fas fa-chevron-left"></i> Back to Queue Manager</a>
         </div>
@@ -54,12 +54,21 @@
 
             <div>
                 <form action="@Url.Action("RemoveAdminFromQueue", "home")" method="post">
-                    <div style="margin-top: 4vh;">
-                        <label for="RemoveAdminUser">Dundee Email Address:</label><br />
-                        <input type="email" id="RemoveAdminUser" name="RemoveAdminUser" pattern=".+dundee.ac.uk" title="Please enter a valid Dundee email address" required placeholder="JoeBloggs@dundee.ac.uk" style="width:40vh; border-radius: 8px;" />
+                    <div style="margin-top: 6vh;">
+                        
+                        <select name="RemoveAdminUser" id="RemoveAdminUser">
+                            @foreach (var item in Model)
+                            {
+                                <option value="@item.User">@item.User</option>
+                            }
+                        </select>
+
+
+                        @*<label for="RemoveAdminUser">Dundee Email Address:</label><br />
+                        <input type="email" id="RemoveAdminUser" name="RemoveAdminUser" pattern=".+dundee.ac.uk" title="Please enter a valid Dundee email address" required placeholder="JoeBloggs@dundee.ac.uk" style="width:40vh; border-radius: 8px;" />*@
                     </div>
 
-                    <div style="margin-top: 11vh;">
+                    <div style="margin-top: 6vh;">
                         <button class="JoinQueueBtn" type="submit">Remove User</button>
                     </div>
 

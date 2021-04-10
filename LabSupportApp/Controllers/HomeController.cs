@@ -43,6 +43,27 @@ namespace LabSupportApp.Controllers
                 //{
                 //    Console.WriteLine(user.ToString());
                 //}
+                var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
+
+                foreach (var q in openQueues)
+                {
+                    TimeSpan newElapsedTime = (now - q.TimeStarted.ToLocalTime());
+                    double elapInMins = newElapsedTime.TotalMinutes;
+                    int ElapsedLabTime = Convert.ToInt32(elapInMins);
+
+                    if (ElapsedLabTime > q.LabLength)
+                    {
+                        ElapsedLabTime = ElapsedLabTime - q.LabLength;
+                        if (ElapsedLabTime > 10)
+                        {
+                            var deleteFilter = Builders<QueueObject>.Filter.Eq("code", q.Code);
+                            _queueAdminCollection.DeleteMany(deleteFilter);
+                        }
+                    }
+
+                }
+
+
 
                 var userUpdate = _studentUsers.Find(studentUser => true).ToList();
                 foreach (var sUser in userUpdate)
@@ -73,7 +94,7 @@ namespace LabSupportApp.Controllers
             var fellowStudents = _studentUsers.Find(studentUser => true).ToList();
             foreach (var student in fellowStudents)
             {
-                if (student.Name == User.Identity.Name)
+                if (student.Name == User.FindFirst("name").Value)
                 {
                     ViewBag.Error = "You are already in a queue!";
                 }
@@ -150,7 +171,7 @@ namespace LabSupportApp.Controllers
             var fellowStudents = _studentUsers.Find(studentUser => true).ToList();
             foreach (var student in fellowStudents)
             {
-                if (student.Name == User.Identity.Name)
+                if (student.Name == User.FindFirst("name").Value)
                 {
                     ViewBag.Error = "You are already in a queue!";
                 }
@@ -187,6 +208,39 @@ namespace LabSupportApp.Controllers
 
         public IActionResult CreateAQueue()
         {
+            {
+                string UserIsAdmin = "null";
+                try
+                {
+
+                    var result = _adminUsersCollection.Find(new BsonDocument()).ToList();
+                    foreach (var user in result)
+                    {
+                        if (user.ToString().IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
+                        {
+                            UserIsAdmin = User.Identity.Name;
+                        }
+                    }
+                }
+                catch (MongoWriteException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
+                Console.WriteLine(UserIsAdmin);
+
+
+                if (UserIsAdmin == User.Identity.Name || User.FindFirst("name").Value.Contains("(Staff)"))
+                {
+                    return View();
+                }
+
+                if (UserIsAdmin != User.Identity.Name || !User.FindFirst("name").Value.Contains("(Staff)"))
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
             return View();
         }
 
@@ -197,7 +251,7 @@ namespace LabSupportApp.Controllers
 
         public IActionResult Queue()
         {
-
+            bool userExists = false;
             int myCode = 0;
             int studentsAhead = 0;
             int qSize = 0;
@@ -206,8 +260,9 @@ namespace LabSupportApp.Controllers
             var fellowStudents = _studentUsers.Find(studentUser => true).ToList();
             foreach (var student in fellowStudents)
             {
-                if (student.Name == User.Identity.Name)
+                if (student.Name == User.FindFirst("name").Value)
                 {
+                    userExists = true;
                     myCode = student.Qcode;
                 }
             }
@@ -224,12 +279,12 @@ namespace LabSupportApp.Controllers
             {
                 foreach (var sUser in studentUsers)
                 {
-                    if (sUser.Name != User.Identity.Name)
+                    if (sUser.Name != User.FindFirst("name").Value)
                     {
                         studentsAhead = studentsAhead + 1;
                     }
 
-                    if (sUser.Name == User.Identity.Name)
+                    if (sUser.Name == User.FindFirst("name").Value)
                     {
                         break;
                     }
@@ -257,12 +312,18 @@ namespace LabSupportApp.Controllers
                     ViewBag.AvgWait = meanElapsedTime;
                 }
 
-                if (singleQ.StudentAtHead == User.Identity.Name)
+                if (singleQ.StudentAtHead == User.FindFirst("name").Value)
                 {
                     ViewBag.TeamsLink = singleQ.TeamsLink;
                     return View("HeadOfQueue");
                 }
 
+            }
+
+            if (userExists != true)
+            {
+                ViewBag.Qerror = "This queue does not exist!";
+                return RedirectToAction("index");
             }
 
             return View();
@@ -274,17 +335,17 @@ namespace LabSupportApp.Controllers
             var fellowStudents = _studentUsers.Find(studentUser => true).ToList();
             foreach (var student in fellowStudents)
             {
-                if (student.Name == User.Identity.Name)
+                if (student.Name == User.FindFirst("name").Value)
                 {
                     return RedirectToAction("Index");
                 }
             }
 
-
+            bool queueExists = false;
             DateTime queueEntryTime = new DateTime();
             queueEntryTime = DateTime.Now;
             Console.WriteLine(queueEntryTime);
-            string Name = User.Identity.Name;
+            string Name = User.FindFirst("name").Value;
             int unsetElapsedTime = 0;
 
             StudentUser studentUser = new StudentUser(UserCode, queueEntryTime, Name, Description, unsetElapsedTime);
@@ -294,6 +355,7 @@ namespace LabSupportApp.Controllers
             {
                 if (singleQ.Code == UserCode)
                 {
+                    queueExists = true;
                     int studentCounter = singleQ.StudentCount + 1;
                     var filter = Builders<QueueObject>.Filter.Eq("user", singleQ.User);
                     var update = Builders<QueueObject>.Update.Set("studentCount", studentCounter);
@@ -349,7 +411,13 @@ namespace LabSupportApp.Controllers
                 //}
             }
 
-            return View("AdminIndex");
+            if (queueExists != true)
+            {
+                ViewBag.Qerror = "This queue does not exist!";
+                return RedirectToAction("index");
+            }
+
+            return View("index");
         }
 
         public IActionResult LeaveQueue()
@@ -357,7 +425,7 @@ namespace LabSupportApp.Controllers
             int code = 0;
             int studentCount = 0;
             string studentName = null;
-            var filter = Builders<StudentUser>.Filter.Where(p => p.Name == User.Identity.Name);
+            var filter = Builders<StudentUser>.Filter.Where(p => p.Name == User.FindFirst("name").Value);
             List<StudentUser> studentUsers = _studentUsers.Find(filter).ToList();
 
             foreach (var sUser in studentUsers)
@@ -408,26 +476,10 @@ namespace LabSupportApp.Controllers
             return View();
         }
 
-        public IActionResult QueueList()
-        {
-
-            var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
-            foreach (var singleQ in openQueues)
-            {
-                if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
-                {
-                    ViewBag.code = singleQ.Code;
-                    ViewBag.StudentsLeft = singleQ.StudentCount;
-                    ViewBag.LabName = singleQ.LabName;
-                    return View("QueueManager");
-                }
-            }
-
-            ViewBag.Error = "Please create a queue or ask an administrator to add you";
-                return View("AdminIndex");
-        }
         public IActionResult QueueManager()
         {
+            DateTime now = new DateTime();
+            now = DateTime.Now;
             int userCode = 0;
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
             foreach (var q in openQueues)
@@ -437,6 +489,25 @@ namespace LabSupportApp.Controllers
                     ViewBag.code = q.Code;
                     ViewBag.StudentsLeft = q.StudentCount;
                     ViewBag.LabName = q.LabName;
+                    TimeSpan newElapsedTime = (now - q.TimeStarted.ToLocalTime());
+                    double elapInMins = newElapsedTime.TotalMinutes;
+                    int ElapsedLabTime = Convert.ToInt32(elapInMins);
+
+                    if (ElapsedLabTime > q.LabLength)
+                    {
+                        ViewBag.TimeOver = ElapsedLabTime - q.LabLength;
+                        if (ViewBag.TimeOver > 10)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.TimeRemaining = q.LabLength - ElapsedLabTime;
+
+                        
+                    }
+
                     userCode = q.Code;
                 }
             }
@@ -464,7 +535,7 @@ namespace LabSupportApp.Controllers
 
             if (userCode == 0)
             {
-                return View("AdminIndex");
+                return RedirectToAction("index");
             }
           
 
@@ -472,7 +543,7 @@ namespace LabSupportApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult QueueManager(string labName, string TeamsLink)
+        public IActionResult QueueManager(string labName, string TeamsLink, int hours, int minutes)
         {
 
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
@@ -482,18 +553,25 @@ namespace LabSupportApp.Controllers
                 {
                     labName = null;
                     TeamsLink = null;
+                    hours = 0;
+                    minutes = 0;
                     ViewBag.Error = "Click View Queue to see your open queue";
                     return View("AdminIndex");
                 }
 
             }
 
+            int labLength = hours * 60;
+            labLength = labLength + minutes;
+
+            DateTime queueStartTime = new DateTime();
+            queueStartTime = DateTime.Now;
             string empty = "No one";
             string user = User.Identity.Name;
             int Qcount = 0;
             Random QcodeRandomiser = new Random();
             int code = QcodeRandomiser.Next(100000, 1000000);
-            QueueObject queueObject = new QueueObject(labName, TeamsLink, code, user, Qcount, empty);
+            QueueObject queueObject = new QueueObject(labName, TeamsLink, code, user, Qcount, empty, queueStartTime, labLength);
 
 
             _queueAdminCollection.InsertOne(queueObject);
@@ -541,6 +619,39 @@ namespace LabSupportApp.Controllers
 
         public IActionResult NewAdminUser()
         {
+            {
+                string UserIsAdmin = "null";
+                try
+                {
+
+                    var result = _adminUsersCollection.Find(new BsonDocument()).ToList();
+                    foreach (var user in result)
+                    {
+                        if (user.ToString().IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
+                        {
+                            UserIsAdmin = User.Identity.Name;
+                        }
+                    }
+                }
+                catch (MongoWriteException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
+                Console.WriteLine(UserIsAdmin);
+
+
+                if (UserIsAdmin == User.Identity.Name || User.FindFirst("name").Value.Contains("(Staff)"))
+                {
+                    return View();
+                }
+
+                if (UserIsAdmin != User.Identity.Name || !User.FindFirst("name").Value.Contains("(Staff)"))
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
             return View();
         }
 
@@ -562,6 +673,10 @@ namespace LabSupportApp.Controllers
                 return View(otherQHeads);
             }
 
+            if (code == 0)
+            {
+                return RedirectToAction("index");
+            }
 
 
             return View();
@@ -582,7 +697,7 @@ namespace LabSupportApp.Controllers
                 }
 
 
-                if (singleQ.User.IndexOf(RemoveAdminUser, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
+                if (singleQ.User == RemoveAdminUser)
                 {
                     if (code == singleQ.Code)
                     {
@@ -590,6 +705,10 @@ namespace LabSupportApp.Controllers
                         _queueAdminCollection.DeleteOne(filter);
                         ViewBag.UserSuccess = UserMessage;
                         List<QueueObject> otherQHeads = _queueAdminCollection.Find(findOtherAdmins).ToList();
+                        if (RemoveAdminUser == User.Identity.Name)
+                        {
+                            return RedirectToAction("index");
+                        }
                         return View(otherQHeads);
 
                     }
@@ -597,6 +716,8 @@ namespace LabSupportApp.Controllers
                 }
 
             }
+
+
 
             UserMessage = "User Is Not Managing This Queue!";
             ViewBag.UserError = UserMessage;
@@ -606,6 +727,23 @@ namespace LabSupportApp.Controllers
 
         public IActionResult AddAdminToQueue()
         {
+            int code = 0;
+            var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
+            var findOtherAdmins = Builders<QueueObject>.Filter.Where(p => p.Code == code);
+            foreach (var singleQ in openQueues)
+            {
+                if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
+                {
+                    code = singleQ.Code;
+                }
+            }
+
+            if (code == 0)
+            {
+                return RedirectToAction("index");
+            }
+
+
             return View();
         }
 
@@ -615,8 +753,10 @@ namespace LabSupportApp.Controllers
             string UserExists = "User already in a queue";
             int code;
             string LabName;
-            string studentAtHead;
+            string studentAtHead = "No one";
             int StudentCount;
+            DateTime labStart;
+            int labLength;
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
             foreach (var singleQ in openQueues)
             {
@@ -643,9 +783,10 @@ namespace LabSupportApp.Controllers
                     code = singleQ.Code;
                     LabName = singleQ.LabName;
                     StudentCount = singleQ.StudentCount;
-                    studentAtHead = singleQ.StudentAtHead;
+                    labStart = singleQ.TimeStarted;
+                    labLength = singleQ.LabLength;
 
-                    QueueObject queueObject = new QueueObject(LabName, AddTeamsLink, code, AddAdminUser, StudentCount, studentAtHead);
+                    QueueObject queueObject = new QueueObject(LabName, AddTeamsLink, code, AddAdminUser, StudentCount, studentAtHead, labStart, labLength);
                     _queueAdminCollection.InsertOne(queueObject);
                     ViewBag.UserSuccess = "Admin Added To Queue!";
                     return View();
@@ -657,10 +798,13 @@ namespace LabSupportApp.Controllers
 
         public IActionResult PullToHead (string Name)
         {
+            bool queueExists = false;
             int code = 0;
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
             var sUsers = _studentUsers.Find(studentUser => true).ToList();
             var copyUsers = _studentUsersBackup.Find(studentUser => true).ToList();
+            DateTime now = new DateTime();
+            now = DateTime.Now;
             foreach (var student in sUsers)
             {
                 if(student.Name == Name)
@@ -670,6 +814,7 @@ namespace LabSupportApp.Controllers
                     {
                         if (q.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                         {
+                            queueExists = true;
                             int count = q.StudentCount - 1;
                             var filter = Builders<QueueObject>.Filter.Eq("code", code);
                             var update = Builders<QueueObject>.Update.Set("studentCount", count);
@@ -686,14 +831,36 @@ namespace LabSupportApp.Controllers
                             ViewBag.StudentsLeft = count;
                             ViewBag.LabName = q.LabName;
                             ViewBag.code = q.Code;
+                            TimeSpan newElapsedTime = (now - q.TimeStarted.ToLocalTime());
+                            double elapInMins = newElapsedTime.TotalMinutes;
+                            int ElapsedLabTime = Convert.ToInt32(elapInMins);
 
+                            if (ElapsedLabTime > q.LabLength)
+                            {
+                                ViewBag.TimeOver = ElapsedLabTime - q.LabLength;
+                            }
+                            else
+                            {
+                                ViewBag.TimeRemaining = q.LabLength - ElapsedLabTime;
+                            }
 
+                            var studentFilter = Builders<StudentUser>.Filter.And(
+                            Builders<StudentUser>.Filter.Where(p => p.Qcode == code),
+                            Builders<StudentUser>.Filter.Where(p => p.Description != null)
+                            );
 
-                            return View("QueueManager");
+                            List<StudentUser> studentUsers = _studentUsers.Find(studentFilter).ToList();
+
+                            return View("QueueManager", studentUsers);
                         }
                     }
                 }
 
+            }
+
+            if (queueExists == false)
+            {
+                return RedirectToAction("index");
             }
 
             return View("QueueManager");
@@ -709,6 +876,8 @@ namespace LabSupportApp.Controllers
             var openQueues = _queueAdminCollection.Find(queueObject => true).ToList();
             var sUsers = _studentUsers.Find(studentUser => true).ToList();
             var copyUsers = _studentUsersBackup.Find(studentUser => true).ToList();
+            DateTime now = new DateTime();
+            now = DateTime.Now;
             foreach (var singleQ in openQueues)
             {
                 if (singleQ.User.IndexOf(User.Identity.Name, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
@@ -716,6 +885,27 @@ namespace LabSupportApp.Controllers
                     code = singleQ.Code;
                     LabName = singleQ.LabName;
                     labCount = singleQ.StudentCount;
+
+                    TimeSpan newElapsedTime = (now - singleQ.TimeStarted.ToLocalTime());
+                    double elapInMins = newElapsedTime.TotalMinutes;
+                    int ElapsedLabTime = Convert.ToInt32(elapInMins);
+
+                    if (ElapsedLabTime > singleQ.LabLength)
+                    {
+                        ViewBag.TimeOver = ElapsedLabTime - singleQ.LabLength;
+                    }
+                    else
+                    {
+                        ViewBag.TimeRemaining = singleQ.LabLength - ElapsedLabTime;
+                    }
+
+                    if (labCount == 0)
+                    {
+                        var findAdmin = Builders<QueueObject>.Filter.Eq("user", User.Identity.Name);
+                        var update = Builders<QueueObject>.Update.Set("studentAtHead", "No one");
+                        var result = _queueAdminCollection.UpdateOne(findAdmin, update);
+                    }
+
 
                     var filter = Builders<StudentUser>.Filter.Where(p => p.Qcode == singleQ.Code);
                     List<StudentUser> studentUsers = _studentUsers.Find(filter).ToList();
@@ -746,9 +936,21 @@ namespace LabSupportApp.Controllers
                     ViewBag.LabName = singleQ.LabName;
                     ViewBag.code = singleQ.Code;
 
-                    return View("QueueManager");
+                    var filter = Builders<StudentUser>.Filter.And(
+                   Builders<StudentUser>.Filter.Where(p => p.Qcode == code),
+                   Builders<StudentUser>.Filter.Where(p => p.Description != null)
+                   );
+
+                    List<StudentUser> studentUsers = _studentUsers.Find(filter).ToList();
+
+                    return View("QueueManager", studentUsers);
                 }
 
+            }
+
+            if (code == 0)
+            {
+                return RedirectToAction("index");
             }
 
             if (code != 0)
@@ -759,7 +961,7 @@ namespace LabSupportApp.Controllers
             }
 
 
-                return View("QueueManager");
+            return View("QueueManager");
         }
 
         public IActionResult EndSession()

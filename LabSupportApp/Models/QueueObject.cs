@@ -26,7 +26,15 @@ namespace LabSupportApp.Models
         [BsonElement("studentAtHead")]
         public string StudentAtHead { get; set; }
 
-        public QueueObject (string LabName, string TeamsLink, int Code, string User, int StudentCount, string StudentAtHead)
+        [BsonElement("timeStarted")]
+        public DateTime TimeStarted { get; set; }
+
+        [BsonElement("labLength")]
+        public int LabLength { get; set; }
+
+
+
+        public QueueObject (string LabName, string TeamsLink, int Code, string User, int StudentCount, string StudentAtHead, DateTime TimeStarted, int LabLength)
         {
             this.LabName = LabName;
             this.TeamsLink = TeamsLink;
@@ -34,6 +42,8 @@ namespace LabSupportApp.Models
             this.User = User;
             this.StudentCount = StudentCount;
             this.StudentAtHead = StudentAtHead;
+            this.TimeStarted = TimeStarted;
+            this.LabLength = LabLength;
         }
 
     }

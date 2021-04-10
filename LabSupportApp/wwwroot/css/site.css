@@ -41,7 +41,17 @@ textarea {
     background-color: white;
 }
 
+.tableCentre {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 input {
+    color: #676767
+}
+
+select {
+    border-radius: 4px;
     color: #676767
 }
 
@@ -53,6 +63,7 @@ input {
 }
 
 .mainContainerAdmin {
+    position: relative;
     margin-top: 0;
     height: 80vh;
     background-color: rgba(36, 36, 36, 0.9);
@@ -340,6 +351,27 @@ input {
     .JoinQueueBtn:hover {
         color: white;
         background-color: #003366;
+        font-weight: bolder;
+    }
+
+.QManagerBtn {
+    font-size: 14px;
+    background-color: #0a0030;
+    color: white;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    border: none;
+    fill-opacity: 1;
+    border-width: 2px;
+    border-style: solid;
+    border-color: white;
+}
+
+    .QManagerBtn:hover {
+        text-decoration: none;
+        border-width: 3px;
+        color: white;
+        background-color: #2600b5;
         font-weight: bolder;
     }
 

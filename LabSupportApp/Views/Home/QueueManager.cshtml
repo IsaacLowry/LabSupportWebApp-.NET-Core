@@ -36,42 +36,50 @@
         }
 </style>
 
-<div class="mainContainerAdmin" style="overflow-y: auto; margin-top: 5vh">
+<div class="mainContainerAdmin" style="overflow:hidden; overflow-y: auto; margin-top: 5vh">
     <div class="row">
-        <div class="col-lg-6 col-lg-offset-3">
-            <div style="margin-top: 2vh;">
-                <a class="hyperlinkText" href=@Url.Action("index", "home")><i class="fas fa-chevron-left"></i> Home</a>
 
-            </div>
+        <div>
+            <a class="QManagerBtn" href="@Url.Action("EndSession", "home")" role="button" style="position: absolute; top: 10px; right: 10px;">
+                <i class="fas fa-trash-alt"></i> End Session
+            </a>
+        </div>
 
+        <div>
+            <a class="QManagerBtn" href="@Url.Action("index", "home")" role="button" style="padding: 1rem 4rem; position: absolute; top: 10px; left: 10px;">
+                <i class="fas fa-chevron-left"></i> Home
+            </a>
         </div>
     </div>
 
-    <div class="admin">
+    <div class="admin" style="margin-top: 8vh;">
 
         <h1 class="queueTitle">Lab Name: @ViewBag.LabName</h1>
         @*<h1 class="admin">@ViewBag.LabName</h1>*@
 
-        <div style="margin-top: 3vh;">
+        <div class="errorMessage" style="margin-top: 4vh">
+            @if (ViewBag.TimeOver != null)
+        {
+            <strong style="font-size: 2rem;">This lab is running @ViewBag.TimeOver minutes over</strong>
+        }
+
+            @if (ViewBag.TimeRemaining != null)
+        {
+            <strong style="color: #49b867;">There are @ViewBag.TimeRemaining minutes remaining</strong>
+        }
+
+
+        </div>
+        <div style="margin-top: 1vh;">
             <p class="queueNum"><i class="queueTitle" style="font-weight: bold;"> @ViewBag.StudentsLeft</i>  students remaining</p>
         </div>
 
-        
+
         <div class="row">
 
-            <div class="col-lg-3 col-lg-offset-3" style="margin-top: 2vh; align-content: center;">
-                <a class="JoinQueueBtn" href="@Url.Action("NextStudent", "home")" role="button">
-                    Next Student
-                </a>
-
-            </div>
-
-            <div class="col-lg-3" style="margin-top: 2vh; align-content: center;">
-                <a class="JoinQueueBtn" href="@Url.Action("EndSession", "home")" role="button">
-                    End Session
-                </a>
-            </div>
-
+            <a class="JoinQueueBtn" href="@Url.Action("NextStudent", "home")" role="button">
+                Next Student
+            </a>
         </div>
 
 
@@ -104,29 +112,29 @@
                 <table class="openClass">
                     <tr>
                         <th>Description</th>
-                        <th>Student Email</th>
+                        <th>Student</th>
                         <th>Elapsed Time</th>
                         <th>See Student</th>
                     </tr>
                     @if (Model != null)
                     {
 
-                        @foreach (var item in Model)
+                    @foreach (var item in Model)
                         {
-                            <tr>
-                                <td>
-                                    @item.Description
-                                </td>
-                                <td>
-                                    @item.Name
-                                </td>
-                                <td>
-                                    @item.ElapsedTime
-                                </td>
-                                <td style="text-align:center">
-                                    <a href="@Url.Action("PullToHead", "home", new { Name = item.Name })"><i class="fas fa-forward"></i></a>
-                                </td>
-                            </tr>
+                    <tr>
+                        <td>
+                            @item.Description
+                        </td>
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            @item.ElapsedTime
+                        </td>
+                        <td style="text-align:center">
+                            <a href="@Url.Action("PullToHead", "home", new { Name = item.Name })"><i class="fas fa-forward"></i></a>
+                        </td>
+                    </tr>
                         }
 
                     }
@@ -142,4 +150,11 @@
 </div>
 
 
+<script type="text/javascript">
+
+    setTimeout(function () {
+        window.location.replace('@Url.Action("QueueManager", "home")');
+    }, 5000)
+
+</script>
 

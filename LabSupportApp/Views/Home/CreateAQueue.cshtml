@@ -4,11 +4,13 @@
 }
 <div class="mainContainerAdmin">
     <div class="row" style="margin-top: 5vh; font-size: 2rem;">
-        <div style="margin-top: 2vh;">
-            <a class="hyperlinkText" href=@Url.Action("index", "home")><i class="fas fa-chevron-left"></i> Home</a>
+        <div>
+            <a class="QManagerBtn" href="@Url.Action("index", "home")" role="button" style="padding: 1rem 4rem; position: absolute; top: 10px; left: 10px;">
+                <i class="fas fa-chevron-left"></i> Home
+            </a>
         </div>
         <div class="admin">
-            <div class="col-lg-6 col-lg-offset-3">
+            <div style="margin-top: 8vh;">
                 <h2 class="teachTitle">Create A New Queue</h2>
                 <div>
                     <form action="@Url.Action("QueueManager", "home")" method="post">
@@ -22,7 +24,50 @@
                             <input type="url" id="TeamsLink" name="TeamsLink" pattern="https?://teams.microsoft.com/.+" title="Please enter a valid Teams invitation link" required placeholder="Paste link to join Teams Meeting here." rows="6" style="width:40vh; height: 4vh; border-radius: 8px; font-size: 12px;" />
                         </div>
 
-                        <button class="JoinQueueBtn" type="submit">Create Queue</button>
+                        <div style="margin-top: 4vh; margin-bottom: 4vh;">
+                            <strong>Lab Length:</strong>
+
+                            <table class="tableCentre">
+                                <tr>
+                                    <td>
+                                        <label for="hours">Hours</label>
+                                    </td>
+                                    <td>
+                                        <label for="minutes" style="margin-left:2vw;">Minutes</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <select name="hours" id="hours" required>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="0">0</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="minutes" id="minutes" style="margin-left:2vw;" required>
+                                            <option value="0">0</option>
+                                            <option value="15">15</option>
+                                            <option value="30">30</option>
+                                            <option value="45">45</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+
+                        <div>
+                            <button class="JoinQueueBtn" type="submit">Create Queue</button>
+                        </div>
+
                     </form>
                 </div>
             </div>

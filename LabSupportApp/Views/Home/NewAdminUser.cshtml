@@ -6,12 +6,14 @@
 <div class="mainContainerAdmin">
 
     <div class="row" style="margin-top: 5vh; font-size: 1.5rem;">
-        <div style="margin-top: 2vh;">
-            <a class="hyperlinkText" href=@Url.Action("Index", "home")><i class="fas fa-chevron-left"></i> Home</a>
+        <div>
+            <a class="QManagerBtn" href="@Url.Action("index", "home")" role="button" style="padding: 1rem 4rem; position: absolute; top: 10px; left: 10px;">
+                <i class="fas fa-chevron-left"></i> Home
+            </a>
         </div>
     </div>
     <div class="admin" style="margin-top: 5vh; font-size: 2rem;">
-        <div class="col-lg-6 col-lg-offset-3">
+        <div class="row">
             <h2 class="teachTitle">New Lab Tutor</h2>
             <div>
                 <form action="@Url.Action("Index", "home")" method="post">

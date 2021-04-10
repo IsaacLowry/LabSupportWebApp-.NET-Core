@@ -6,19 +6,27 @@
 <div class="mainContainer">
 
     @*audio sourced from https://material.io/design/sound/sound-resources.html*@
-    <audio src="~/Resources/alert.wav" id="HeadOfQueueNotification"></audio>
+    <audio src="~/Resources/alert.wav" id="HeadOfQueueNotification" autoplay muted></audio>
 
     <script type="text/javascript">
-        const HeadOfQueueNotification = document.getElementById("HeadOfQueueNotification");
+        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 
+        function init() {
+            var sound = document.getElementById("HeadOfQueueNotification");
+            if (navigator.vibrate) {
+                navigator.vibrate(100);
+            }
+            sound.addEventListener('ended', loopAudio, false);
+        }
 
         window.onload = function () {
             if (document.getElementById('vibrationToggle').checked === true) {
-                window.navigator.vibrate(1000);
+                navigator.vibrate([100, 100, 100]);
             }
 
             if (document.getElementById('soundToggle').checked === true) {
-                HeadOfQueueNotification.play();
+                document.getElementById("HeadOfQueueNotification").muted = false;
+                document.getElementById("HeadOfQueueNotification").play();
             }
 
             if (document.getElementById('pushToggle').checked === true) {
@@ -29,21 +37,23 @@
 
         setTimeout(function () {
             if (document.getElementById('vibrationToggle').checked === true) {
-                window.navigator.vibrate(1000);
+                navigator.vibrate([100, 100, 100]);
             }
 
             if (document.getElementById('soundToggle').checked === true) {
-                HeadOfQueueNotification.play();
+                document.getElementById("HeadOfQueueNotification").muted = false;
+                document.getElementById("HeadOfQueueNotification").play();
             }
         }, 30000) //time to wait in ms for audio to play
 
         setTimeout(function () {
             if (document.getElementById('vibrationToggle').checked === true) {
-                window.navigator.vibrate(1000);
+                navigator.vibrate([100, 100, 100]);
             }
 
             if (document.getElementById('soundToggle').checked === true) {
-                HeadOfQueueNotification.play();
+                document.getElementById("HeadOfQueueNotification").muted = false;
+                document.getElementById("HeadOfQueueNotification").play();
             }
         }, 60000) //time to wait in ms for audio to play
     </script>
